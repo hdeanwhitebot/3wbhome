@@ -1,0 +1,18 @@
+{
+  "name": "3wbhome",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev:resident": "turbo dev --filter=resident",
+    "dev:vendor": "turbo dev --filter=vendor"
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  }
+}
