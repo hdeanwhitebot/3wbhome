@@ -1,57 +1,71 @@
-# 3WBHome — Agent Profile (v6 Orchestration)
-
-## Comms Protocol — MANDATORY
-Before ANY work, post check-in to hdeanwhitebot/Comms issue #1024:
-```
-curl -X POST -H "Authorization: token TOKEN_FROM_ENV_COMMS_TOKEN" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/hdeanwhitebot/Comms/issues/1024/comments -d '{"body":"[3WB] Check-in TIMESTAMP / Status: Booting / Working on: reading state"}'
-```
-Check-in is your FIRST action. Check again every 60 minutes. Update agent-state/3WB.md before exit.
+# Home — 3wbhome.com
 
 ## Product Identity
-3WBHome is a property management SaaS platform with four distinct portals: property managers, tenants, owners, and maintenance teams. Revenue model: SaaS subscription per managed unit. Most architecturally mature of the 3WB portfolio — strong foundation, early feature set.
+3WB Home is a property management platform with four portals — Resident, Vendor, Manager, and Leasor (enterprise). One platform, four user types, zero friction. Residents pay rent, submit work orders. Vendors bid on jobs. Managers see everything. Leasors get portfolio analytics.
+
+- URL: 3wbhome.com
+- Status: In development
+- Audience: Property managers, landlords, tenants, contractors, REITs
 
 ## Tech Stack
-- **Frontend**: Next.js 16, TypeScript, Tailwind CSS
-- **Monorepo**: Turborepo
-- **Database**: Supabase (PostgreSQL + Auth + Storage)
+- **Monorepo**: Turborepo (npm workspaces)
+- **Frontend**: Next.js, TypeScript, Tailwind CSS
+- **Database**: Supabase (@3wb/database shared package)
+- **Payments**: Stripe (@3wb/payments shared package)
+- **UI**: Shared component library (@3wb/ui) with Lucide icons
+- **Types**: Shared TypeScript types (@3wb/types)
 - **Node**: 20.x
 
 ## Architecture
-- Turborepo monorepo with multiple Next.js apps (one per portal)
-- 4 portals: manager portal, tenant portal, owner portal, maintenance portal
-- Shared packages via Turborepo workspace
-
-## Agent Team Configuration
-- **Lead (3WB)**: Owns 3WBHome end-to-end. Routes work to portal-specific teammates.
-- **Teammates**: Spawn for cross-portal features, Supabase migrations, shared package work.
-- **Plan approval required for**: Supabase schema changes, multi-portal rollouts, RLS policy changes.
+```
+apps/
+  resident/    — Tenant portal (pay rent, work orders, lease docs)
+  vendor/      — Contractor portal (bid on jobs, manage work)
+  manager/     — Property manager dashboard (full control)
+  leasor/      — Enterprise/REIT portal (portfolio analytics)
+packages/
+  database/    — @3wb/database (Supabase client, queries)
+  payments/    — @3wb/payments (Stripe integration)
+  types/       — @3wb/types (shared TypeScript types)
+  ui/          — @3wb/ui (shared components)
+```
 
 ## How to Run
 ```bash
 npm install
-npm run dev  # Starts all portals via Turborepo
+npm run dev              # All apps
+npm run dev:resident     # Resident portal only
+npm run dev:vendor       # Vendor portal only
+npm run build            # Build all
 ```
 
+## Design
+See DESIGN-SPEC.md for full design system — colors, typography, portal-specific accents.
+- Blue: Resident portal
+- Orange: Vendor portal
+- Purple: Leasor/enterprise
+- Green: Money/success
+
 ## Definition of Done
-- [ ] All affected apps build: `npm run build` succeeds
-- [ ] No TypeScript errors in modified packages
-- [ ] Supabase schema changes include RLS policies
-- [ ] State which portal(s) were affected and how to verify
-
-## Forbidden Actions
-- Never modify Supabase production data directly
-- Never commit .env files or Supabase service keys
-- Never break shared package contracts (downstream portals depend on them)
-
-## Context Budget
-- Maximum 60 minutes per session
-- ONE portal OR one shared feature per session
-- Cross-portal features require separate sessions
+- [ ] `npm run build` succeeds across all apps
+- [ ] Changes in shared packages tested against all consuming apps
+- [ ] UI matches DESIGN-SPEC.md tokens and patterns
+- [ ] Diff is focused — one portal or one package per change
+- [ ] State what was changed and how to verify
 
 ## Known Issues
-- Most architecturally mature design but least code written — expect sparse file trees
-- Turborepo turbo.json may need updates as new apps are added
-- No tests of any kind
+- Leasor app has no package.json (not scaffolded yet)
+- Early development — most features not yet built
+- No tests
 
-## Comms Protocol
-Format: [3WB] {status} - {portal affected}
+## Forbidden Actions
+- Never modify @3wb/database schema without checking all four apps
+- Never commit .env files or Supabase keys
+- Never mix changes across multiple apps in one commit
+- Never deviate from DESIGN-SPEC.md color/typography tokens
+
+## Quality Gate
+1. `npm run build` must pass (all apps via turbo)
+2. If shared package changed, verify all four apps still build
+3. No .env values in diff
+4. Review by lead (Mia) before merge
