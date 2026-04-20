@@ -29,6 +29,17 @@ export function Footer() {
         <div className="mt-14 pt-6 border-t border-gray-100 text-xs text-gray-500">
           &copy; 2026 3WB Holdings, LLC
         </div>
+        {/* 3WB Holdings — family of brands (reciprocal cross-links) */}
+        <nav aria-label="3WB Holdings family of brands" className="mt-6 pt-6 border-t border-gray-100 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-gray-500">
+          <span className="font-semibold">Family of brands:</span>
+          <a href="https://heydosi.com" className="hover:text-gray-900">Dosi</a>
+          <a href="https://cwballantyne.com" className="hover:text-gray-900">C&amp;W Steakhouse</a>
+          <a href="https://smallbizgen.com" className="hover:text-gray-900">SmallBizGen</a>
+          <a href="https://listingclip.com" className="hover:text-gray-900">ListingClip</a>
+          <a href="https://investorsupercharge.com" className="hover:text-gray-900">InvestorSupercharge</a>
+          <a href="https://costalign.com" className="hover:text-gray-900">CostAlign</a>
+          <a href="https://silencedapp.com" className="hover:text-gray-900">Silenced</a>
+        </nav>
       </div>
     </footer>
   );
